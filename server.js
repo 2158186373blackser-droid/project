@@ -1,7 +1,9 @@
 const { app, initialize } = require('./src/app');
 const http = require('http');
+const { startScheduler } = require('./src/services/schedulerService');
 
 const PORT = process.env.PORT || 3000;
+const HOST = '0.0.0.0';   // 监听所有网络接口，支持局域网访问
 
 // 创建HTTP服务器
 const server = http.createServer(app);
@@ -13,13 +15,17 @@ const startServer = async () => {
     await initialize();
     
     // 启动服务器
-    server.listen(PORT, () => {
+    server.listen(PORT, HOST, () => {
       console.log('='.repeat(50));
-      console.log(`🚀 服务器运行在 http://localhost:${PORT}`);
+      console.log(`🚀 服务器运行在 http://${HOST}:${PORT}`);
       console.log(`📝 环境: ${process.env.NODE_ENV || 'development'}`);
       console.log(`🔗 客户端地址: ${process.env.CLIENT_URL || 'http://localhost:8080'}`);
       console.log(`🕐 启动时间: ${new Date().toLocaleString()}`);
       console.log('='.repeat(50));
+      
+      // 启动定时任务调度器
+      startScheduler();
+      console.log('✅ 定时任务调度器已启动');
     });
     
     // 优雅关闭

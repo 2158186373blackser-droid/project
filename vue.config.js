@@ -3,31 +3,23 @@ const path = require('path');
 
 module.exports = defineConfig({
   transpileDependencies: true,
-  
   devServer: {
+    host: '0.0.0.0',           // 必须设置为 0.0.0.0
     port: 8080,
+    allowedHosts: 'all',
+    historyApiFallback: true,
     proxy: {
       '/api': {
-        target: process.env.VUE_APP_API_BASE_URL || 'http://localhost:3000',
-        changeOrigin: true
+        target: 'http://localhost:3000',
+        changeOrigin: true,
       }
     }
   },
-  
   productionSourceMap: false,
-  
   configureWebpack: {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, 'src')
-      }
-    }
-  },
-  
-  css: {
-    loaderOptions: {
-      scss: {
-        additionalData: `@import "@/assets/styles/variables.scss";`
       }
     }
   }
